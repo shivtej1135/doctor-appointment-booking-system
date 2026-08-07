@@ -53,5 +53,34 @@ const getDoctorById = async (id) => {
     }
 };
 
+const updateDoctor = async (specialization,id)=>{
+    try{
+        const result = await pool.query(
+            `UPDATE doctors
+            SET specialization= $1
+            WHERE id=$2
+             RETURNING *`,
+            [specialization,id]
+        );
+        return result.rows[0];
+    }catch (error) {
+        throw error;
+    }
+}
 
-module.exports={createDoctor,getAllDoctors,getDoctorById};
+const deleteDoctor = async (id)=>{
+    try{
+        const result = await pool.query(
+            `DELETE FROM doctors
+            WHERE id=$1
+            RETURNING *`,
+            [id]
+        );
+        return result.rows[0];
+    }catch (error) {
+        throw error;
+    }
+}
+
+
+module.exports={createDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor};
