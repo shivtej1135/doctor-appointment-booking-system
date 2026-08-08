@@ -51,7 +51,7 @@ const updateDoctor = async (req, res) => {
         const { specialization } = req.body;
         const id = req.params.id;
         const updatedDoctor = await updateDoctorService(specialization, id);
-        if (!updateDoctor) {
+        if (!updatedDoctor) {
             return res.status(404).json({
                 message: "Doctor Not Found"
             }
@@ -84,5 +84,6 @@ const deleteDoctor = async (req,res)=>{
         throw error;
     }
 }
+
 
 module.exports={registerDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor};

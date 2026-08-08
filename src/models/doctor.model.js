@@ -3,7 +3,7 @@ const createDoctor = async ({ userId, specialization }) => {
     try{
         const result = await pool.query(
         `INSERT INTO doctors (user_id,specialization)
-        Values($1,$2)
+        VALUES($1,$2)
         RETURNING *`,
         [userId,specialization]
         );
@@ -82,5 +82,18 @@ const deleteDoctor = async (id)=>{
     }
 }
 
+const getDoctorByUserId = async (id)=>{
+    try{
+        const result = await pool.query(
+            `SELECT * FROM doctors 
+            WHERE user_id=$1`,
+            [id]
+        );
+        return result.rows[0];
+    }catch (error) {
+        throw error;
+    }
+}
 
-module.exports={createDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor};
+
+module.exports={createDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor,getDoctorByUserId};
