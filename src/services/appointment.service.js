@@ -1,4 +1,8 @@
-const {createAppointment,getAllAppointments,getAppointmentById,updateAppointment,deleteAppointment} = require("../models/appointment.model");
+const {createAppointment,
+    getAllAppointments,
+    getAppointmentById
+    ,updateAppointment,
+    deleteAppointment,getAppointmentsByDoctorId} = require("../models/appointment.model");
 
 const createAppointmentService = async (doctorId, date, startTime, endTime) =>{
     try{
@@ -53,5 +57,21 @@ const deleteAppointmentService = async (id)=>{
     }
 }
 
+const getAppointmentsByDoctorIdService = async(doctorId)=>{
+    try{
+        const result = await getAppointmentsByDoctorId(doctorId);
+        return result;
+    }catch (error) {
+        throw error;
+    }
+}
 
-module.exports={createAppointmentService,getAllAppointmentsService,getAppointmentByIdService,updateAppointmentService,deleteAppointmentService};
+
+module.exports = {
+    createAppointmentService,
+    getAllAppointmentsService,
+    getAppointmentByIdService,
+    updateAppointmentService,
+    deleteAppointmentService,
+    getAppointmentsByDoctorIdService
+};

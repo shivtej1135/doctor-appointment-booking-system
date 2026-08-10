@@ -1,4 +1,9 @@
-const {createAppointmentService,getAllAppointmentsService,getAppointmentByIdService,updateAppointmentService,deleteAppointmentService}=require("../services/appointment.service");
+const {createAppointmentService,
+    getAllAppointmentsService,
+    getAppointmentByIdService,
+    updateAppointmentService,
+    deleteAppointmentService,
+getAppointmentsByDoctorIdService}=require("../services/appointment.service");
 
 const {getDoctorByUserIdService}=require("../services/doctor.service");
 
@@ -129,4 +134,26 @@ const deleteAppointmentController = async(req,res)=>{
         throw error;
     }
 }
-module.exports={createAppointmentController,getAllAppointmentsController,getAppointmentByIdController,updateAppointmentController,deleteAppointmentController};
+
+const getAppointmentsByDoctorIdController = async (req, res,next) => {
+    try {
+        const id = req.user.id;
+        const  doctor = await getDoctorByUserIdService(id);
+        const doctorId = doctor.id;
+
+        const getAppointment = await getAppointmentsByDoctorIdService(doctorId);
+        return res.status(200).json({
+            message: "Appointments fetched successfully",
+            getAppointment
+        });
+    } catch (error) {
+    next(error);
+}
+}
+
+module.exports={createAppointmentController,
+    getAllAppointmentsController,
+    getAppointmentByIdController,
+    updateAppointmentController,
+    deleteAppointmentController,
+    getAppointmentsByDoctorIdController};

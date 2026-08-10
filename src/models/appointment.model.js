@@ -95,4 +95,17 @@ const deleteAppointment = async (id) => {
     }
 }
 
-module.exports={createAppointment,getAllAppointments,getAppointmentById,updateAppointment,deleteAppointment};
+const getAppointmentsByDoctorId = async(doctorId)=>{
+    try{
+        const result = await pool.query(
+            `SELECT * FROM appointments
+            WHERE doctor_id=$1`,
+            [doctorId]
+        );
+        return result.rows;
+    }catch (error) {
+        throw error;
+    }
+}
+
+module.exports={createAppointment,getAllAppointments,getAppointmentById,updateAppointment,deleteAppointment,getAppointmentsByDoctorId};
