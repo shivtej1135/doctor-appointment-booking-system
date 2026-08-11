@@ -37,8 +37,7 @@ const createBookingService = async (appointmentId, userId) => {
         const result = await createBooking(client,appointmentId,userId);
 
         const update = await updateAppointmentStatus(client, appointmentId);
-        console.log("Updated appointment:", update);
-
+        
         // Permanently save all changes made in this transaction
         await client.query("COMMIT");
 
