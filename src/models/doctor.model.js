@@ -96,4 +96,8 @@ const getDoctorByUserId = async (id)=>{
 }
 
 
-module.exports={createDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor,getDoctorByUserId};
+module.exports={createDoctor,
+    getAllDoctors,
+    getDoctorById,updateDoctor,
+    deleteDoctor,
+    getDoctorByUserId};

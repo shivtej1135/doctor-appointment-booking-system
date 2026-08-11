@@ -151,9 +151,29 @@ const getAppointmentsByDoctorIdController = async (req, res,next) => {
 }
 }
 
+const cancelAppointmentController = async (req, res, next) => {
+    try {
+        const appointmentId = req.params.id;
+        const userId = req.user.id;
+
+        const cancelAppointment = await cancelAppointmentService(
+            appointmentId,
+            userId
+        );
+
+        return res.status(200).json({
+            message: "Appointment cancelled successfully",
+            cancelAppointment
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports={createAppointmentController,
     getAllAppointmentsController,
     getAppointmentByIdController,
     updateAppointmentController,
-    deleteAppointmentController,
+    deleteAppointmentController,cancelAppointmentController,
     getAppointmentsByDoctorIdController};

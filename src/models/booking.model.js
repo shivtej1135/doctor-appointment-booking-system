@@ -125,6 +125,23 @@ const updateAppointmentStatusAfterCancellation = async (client, appointmentId) =
     }
 };
 
+const getBookingByAppointmentId = async (client, appointmentId) => {
+    try {
+        const result = await client.query(
+            `SELECT *
+             FROM bookings
+             WHERE appointment_id = $1
+             FOR UPDATE`,
+            [appointmentId]
+        );
+
+        return result.rows[0];
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 module.exports = {
     createBooking,

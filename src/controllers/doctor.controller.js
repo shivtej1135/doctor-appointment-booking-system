@@ -1,5 +1,9 @@
 
-const{createDoctorService,getAllDoctorsService, getDoctorByIdService, updateDoctorService,deleteDoctorService}=require("../services/doctor.service");
+const{createDoctorService,
+    getAllDoctorsService, 
+    getDoctorByIdService, 
+    updateDoctorService,
+    deleteDoctorService}=require("../services/doctor.service");
 
 const registerDoctor= async(req,res)=>{
     try{
@@ -86,4 +90,8 @@ const deleteDoctor = async (req,res)=>{
 }
 
 
-module.exports={registerDoctor,getAllDoctors,getDoctorById,updateDoctor,deleteDoctor};
+module.exports={registerDoctor,
+    getAllDoctors,
+    getDoctorById,
+    updateDoctor,
+    deleteDoctor};

@@ -5,7 +5,9 @@ const authorizeRoles = require("../middlewares/role.middleware");
 const {createAppointmentController,
     getAllAppointmentsController,
     getAppointmentByIdController,updateAppointmentController,
-    deleteAppointmentController,getAppointmentsByDoctorIdController} = require("../controllers/appointment.controller");
+    deleteAppointmentController,
+    cancelAppointmentController,
+    getAppointmentsByDoctorIdController} = require("../controllers/appointment.controller");
 
 router.post("/createAppointment",verifyToken,authorizeRoles("doctor"),createAppointmentController);
 router.get("/allAppointments",verifyToken,authorizeRoles("admin"),getAllAppointmentsController);
@@ -13,4 +15,5 @@ router.get("/appointmentById/:id",verifyToken,authorizeRoles("admin"),getAppoint
 router.put("/updateAppointments/:id",verifyToken,authorizeRoles("doctor"),updateAppointmentController);
 router.delete("/deleteAppointment/:id",verifyToken,authorizeRoles("doctor"),deleteAppointmentController);
 router.get("/getAppointmentsByDoctorId",verifyToken,authorizeRoles("doctor"),getAppointmentsByDoctorIdController);
+router.patch("/cancelAppointment/:id",verifyToken,authorizeRoles("doctor"),cancelAppointmentController)
 module.exports = router;

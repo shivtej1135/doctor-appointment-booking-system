@@ -1,3 +1,4 @@
+const { Client } = require("pg");
 const pool = require("../config/db");
 
 const createAppointment = async (doctorId, date, startTime, endTime) => { //appointment is created by doctor not admin.
@@ -108,4 +109,44 @@ const getAppointmentsByDoctorId = async(doctorId)=>{
     }
 }
 
-module.exports={createAppointment,getAllAppointments,getAppointmentById,updateAppointment,deleteAppointment,getAppointmentsByDoctorId};
+const getAppointmentForCancellation = async (client, appointmentId) => {
+    try {
+        const result = await client.query(
+            `SELECT *
+            FROM appointments
+            WHERE id = $1
+            FOR UPDATE`,
+            [appointmentId]
+        );
+        return result.rows[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
+const cancelAppointment = async (client,appointmentId)=>{
+    try{
+        const result = await client.query(
+            `UPDATE appointments
+            SET status=$1
+            WHERE id=$2
+              RETURNING *`,
+            ["cancelled",appointmentId]
+        );
+        return result.rows[0];
+    }catch (error) {
+        throw error;
+    }
+}
+
+
+
+module.exports={createAppointment,
+    getAllAppointments,
+    getAppointmentById,
+    updateAppointment,
+    deleteAppointment,
+    getAppointmentsByDoctorId,
+    getAppointmentForCancellation,
+    cancelAppointment
+};

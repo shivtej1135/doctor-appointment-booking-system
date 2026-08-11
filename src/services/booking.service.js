@@ -124,4 +124,6 @@ const cancelBookingService = async (bookingId, userId) => {
     }
 }
 
-module.exports={createBookingService,getBookingsByUserIdService,cancelBookingService};
+module.exports={createBookingService,
+    getBookingsByUserIdService,
+    cancelBookingService};

@@ -1,5 +1,11 @@
-const {createDoctor,getAllDoctors,updateDoctor,deleteDoctor,getDoctorByUserId}=require("../models/doctor.model");
+const {createDoctor,
+    getAllDoctors,
+    updateDoctor,
+    deleteDoctor,
+    getDoctorByUserId}=require("../models/doctor.model");
+
 const {findUserByEmail,createUser}=require("../models/user.model");
+
 const bcrypt = require("bcrypt");
 
 const createDoctorService = async ({ name, email, password, specialization }) => {
@@ -68,4 +74,8 @@ const getDoctorByUserIdService = async (id)=>{
 }
 
 
-module.exports={createDoctorService,getAllDoctorsService,getDoctorByIdService,updateDoctorService,deleteDoctorService,getDoctorByUserIdService};
+module.exports={createDoctorService,
+    getAllDoctorsService,
+    getDoctorByIdService,
+    updateDoctorService,
+    deleteDoctorService,getDoctorByUserIdService};
