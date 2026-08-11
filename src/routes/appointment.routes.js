@@ -8,11 +8,16 @@ const {createAppointmentController,
     deleteAppointmentController,
     cancelAppointmentController,
     getAppointmentsByDoctorIdController} = require("../controllers/appointment.controller");
+    const validate = require("../middlewares/validation.middleware");
+const {
+    createAppointmentSchema,
+    updateAppointmentSchema
+} = require("../validators/appointment.validator");
 
-router.post("/createAppointment",verifyToken,authorizeRoles("doctor"),createAppointmentController);
+router.post("/createAppointment",verifyToken,authorizeRoles("doctor"),validate(createAppointmentSchema),createAppointmentController);
 router.get("/allAppointments",verifyToken,authorizeRoles("admin"),getAllAppointmentsController);
 router.get("/appointmentById/:id",verifyToken,authorizeRoles("admin"),getAppointmentByIdController);
-router.put("/updateAppointments/:id",verifyToken,authorizeRoles("doctor"),updateAppointmentController);
+router.put("/updateAppointments/:id",verifyToken,authorizeRoles("doctor"),validate(updateAppointmentSchema),updateAppointmentController);
 router.delete("/deleteAppointment/:id",verifyToken,authorizeRoles("doctor"),deleteAppointmentController);
 router.get("/getAppointmentsByDoctorId",verifyToken,authorizeRoles("doctor"),getAppointmentsByDoctorIdController);
 router.patch("/cancelAppointment/:id",verifyToken,authorizeRoles("doctor"),cancelAppointmentController)
