@@ -1,8 +1,10 @@
+const AppError = require("../utils/errors");
 const {createDoctor,
     getAllDoctors,
     updateDoctor,
     deleteDoctor,
-    getDoctorByUserId}=require("../models/doctor.model");
+    getDoctorByUserId,
+getDoctorById}=require("../models/doctor.model");
 
 const {findUserByEmail,createUser}=require("../models/user.model");
 
@@ -12,7 +14,7 @@ const createDoctorService = async ({ name, email, password, specialization }) =>
     try {
         const result = await findUserByEmail(email);
         if(result){
-            throw new Error("User already exists");
+            throw new AppError("User already exists", 409);
         }
         const hashedPassword=await bcrypt.hash(password,10);
         const user= await createUser({name,email,password:hashedPassword,role:"doctor"});
@@ -39,6 +41,9 @@ const getAllDoctorsService = async () => {
 const getDoctorByIdService = async (id) => {
     try {
         const result = await getDoctorById(id);
+        if (!result) {
+    throw new AppError("Doctor not found", 404);
+}
         return result;
     } catch (error) {
         throw error;
@@ -48,6 +53,10 @@ const getDoctorByIdService = async (id) => {
 const updateDoctorService = async (specialization,id)=>{
     try{
         const result = await updateDoctor(specialization,id);
+        if (!result) {
+    throw new AppError("Doctor not found", 404);
+}
+
         return result;
     }catch (error) {
         throw error;
@@ -57,6 +66,10 @@ const updateDoctorService = async (specialization,id)=>{
 const deleteDoctorService = async (id)=>{
     try{
         const result = await deleteDoctor(id);
+        if (!result) {
+    throw new AppError("Doctor not found", 404);
+}
+
         return result;
     }catch (error) {
         throw error;
@@ -67,6 +80,10 @@ const deleteDoctorService = async (id)=>{
 const getDoctorByUserIdService = async (id)=>{
     try{
         const result = await getDoctorByUserId(id);
+        if (!result) {
+    throw new AppError("Doctor not found", 404);
+}
+
         return result;
     }catch (error) {
         throw error;

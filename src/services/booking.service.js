@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-
+const AppError = require("../utils/errors");
 const {
     createBooking,
     getAppointmentForBooking,
@@ -26,11 +26,11 @@ const createBookingService = async (appointmentId, userId) => {
         appointmentId
     );
         if (!appointment) {
-            throw new Error("Appointment not found");
+            throw new AppError("Appointment not found", 404);
 }
 
         if (appointment.status !== "available") {
-            throw new Error("Appointment is already booked");
+            throw new AppError("Appointment is already booked", 409);
 }
 
         // Create the booking using the same database connection
@@ -83,15 +83,15 @@ const cancelBookingService = async (bookingId, userId) => {
         const cancel = await getBookingForCancellation(client,bookingId);
 
         if (!cancel) {
-            throw new Error("Booking not found");
+            throw new AppError("Booking not found", 404);
         }
 
         if(cancel.user_id!=userId){
-            throw new Error("Not Authorized");
+            throw new AppError("Not Authorized", 403);
         }
 
         if(cancel.status!="confirmed"){
-            throw new Error("Booking cannot be cancelled");
+            throw new AppError("Booking cannot be cancelled", 409);
         }
 
         const cancelledBooking = await cancelBooking(client, bookingId);

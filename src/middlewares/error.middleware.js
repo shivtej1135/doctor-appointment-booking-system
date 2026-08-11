@@ -1,7 +1,9 @@
+const AppError = require("../utils/errors");
 const errorMiddleware = (err, req, res, next) => {
-    return res.status(500).json({
-        message: err.message
-    });
+    const statusCode = err.statusCode || 500;
+   return res.status(statusCode).json({
+    message: err.message
+});
 };
 
 module.exports = errorMiddleware;

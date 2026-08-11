@@ -150,5 +150,6 @@ module.exports = {
     getBookingsByUserId,
     getBookingForCancellation,
     cancelBooking,
-    updateAppointmentStatusAfterCancellation
+    updateAppointmentStatusAfterCancellation,
+    getBookingByAppointmentId
 };

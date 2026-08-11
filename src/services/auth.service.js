@@ -1,12 +1,13 @@
 const { findUserByEmail, findUserById, createUser } = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const AppError = require("../utils/errors");
 
 const registerUserService = async ({ name, email, password, role }) => {
     try{
             const existingUser = await findUserByEmail(email);
            if (existingUser) {
-            throw new Error("User already exists");
+            throw new AppError("User already exists", 409);
 }
           const hashedPassword=await bcrypt.hash(password,10);
             const user=await createUser({name,email,password:hashedPassword,role});
@@ -20,14 +21,14 @@ const loginUserService= async({email,password})=>{
     try{
         const existingUser= await findUserByEmail(email);
         if(!existingUser)
-            throw new Error("User does not exist");
+            throw new AppError("User does not exist", 404);
 
             const isMatch= await bcrypt.compare(
                 password,
                 existingUser.password
             )
         
-        if(!isMatch) throw new Error("Invalid email or password");
+        if(!isMatch) throw new AppError("Invalid email or password", 401);
         const token = jwt.sign(
             {
             id:existingUser.id,

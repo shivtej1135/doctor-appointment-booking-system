@@ -5,7 +5,7 @@ const{createDoctorService,
     updateDoctorService,
     deleteDoctorService}=require("../services/doctor.service");
 
-const registerDoctor= async(req,res)=>{
+const registerDoctor= async(req,res,next)=>{
     try{
         const { name, email, password, specialization } = req.body;
         const doctor = await createDoctorService({ name, email, password, specialization });
@@ -13,80 +13,69 @@ const registerDoctor= async(req,res)=>{
             message: "Doctor registered successfully",
             doctor,
             });
-    }catch(error){
-        throw error;
-    }
+    }catch (error) {
+    next(error);
+}
 }
 
-const getAllDoctors=async(req,res)=>{
+const getAllDoctors=async(req,res,next)=>{
     try{
         const allDoctors= await getAllDoctorsService();
         return res.status(200).json({
             message:"Found all doctors successfully",
             allDoctors
         })
-    }catch(error){
-        throw error;
-    }
+    }catch (error) {
+    next(error);
+}
 }
 
-const getDoctorById = async (req, res) => {
+const getDoctorById = async (req, res,next) => {
     try {
         const id = req.params.id;
         const doctorById = await getDoctorByIdService(id);
 
-        if (!doctorById) {
-            return res.status(404).json({
-                message: "Doctor not found"
-            });
-        }
+       if (!doctorById) {
+    throw new AppError("Doctor not found", 404);
+}
 
         return res.status(200).json({
             message: "Found doctor successfully",
             doctorById
         });
     } catch (error) {
-        throw error;
-    }
+    next(error);
+}
 }
 
-const updateDoctor = async (req, res) => {
+const updateDoctor = async (req, res,next) => {
     try {
         const { specialization } = req.body;
         const id = req.params.id;
         const updatedDoctor = await updateDoctorService(specialization, id);
-        if (!updatedDoctor) {
-            return res.status(404).json({
-                message: "Doctor Not Found"
-            }
-            );
-        }
+       
         return res.status(200).json({
             message: "Doctor Updated successfully",
             updatedDoctor
         });
 
     } catch (error) {
-        throw error;
-    }
+    next(error);
+}
 }
 
-const deleteDoctor = async (req,res)=>{
+const deleteDoctor = async (req,res,next)=>{
     try{
         const id = req.params.id;
         const deletedDoctor = await deleteDoctorService(id);
-        if(!deletedDoctor){
-            return res.status(404).json({
-                message:"Doctor Not Found"
-            });
-        }
+        
         return res.status(200).json({
             message:"Doctor deleted successfully",
             deletedDoctor
         });
     }catch (error) {
-        throw error;
-    }
+    next(error);
+}
 }
 
 

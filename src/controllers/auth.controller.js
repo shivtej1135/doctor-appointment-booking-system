@@ -1,6 +1,6 @@
 const {registerUserService,loginUserService}=require("../services/auth.service");
 
- const registerUser = async (req, res) => {
+ const registerUser = async (req, res,next) => {
     try{
         const {name,email,password,role}=req.body;
         const user = await registerUserService({name,email,password,role});
@@ -9,11 +9,11 @@ const {registerUserService,loginUserService}=require("../services/auth.service")
             user,
             });
     }catch(err){
-        throw err;
-    }
+    next(err);
+}
  }
 
- const loginUser = async(req,res)=>{
+ const loginUser = async(req,res,next)=>{
     try{
         const{email,password}=req.body;
         const token = await loginUserService({email,password});
@@ -22,7 +22,7 @@ const {registerUserService,loginUserService}=require("../services/auth.service")
             token,
         });
     }catch(err){
-        throw err;
-    }
+    next(err);
+}
  }
  module.exports=({registerUser,loginUser});

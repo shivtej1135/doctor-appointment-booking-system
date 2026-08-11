@@ -1,4 +1,5 @@
 const { application } = require("express");
+const AppError = require("../utils/errors");
 const {createAppointment,
     getAllAppointments,
     getAppointmentById
@@ -8,11 +9,23 @@ const {createAppointment,
 getAppointmentForCancellation,
     cancelAppointment} = require("../models/appointment.model");
 
+const pool = require("../config/db");
+
+
+const {
+    getDoctorByUserIdService
+} = require("./doctor.service");
+
+const {
+    getBookingByAppointmentId,
+    cancelBooking
+} = require("../models/booking.model");
+
 const createAppointmentService = async (doctorId, date, startTime, endTime) =>{
     try{
         const result = await createAppointment(doctorId, date, startTime, endTime);
         if(!result){
-            throw new Error("Appointment can not be created");
+            throw new AppError("Appointment cannot be created", 500);
         }
         return result;
     }catch (error) {
@@ -34,7 +47,7 @@ const getAppointmentByIdService = async (id) => {
         const result = await getAppointmentById(id);
 
         if (!result) {
-            throw new Error("Appointment not found");
+            throw new AppError("Appointment not found", 404);
         }
 
         return result;
@@ -46,6 +59,9 @@ const getAppointmentByIdService = async (id) => {
 const updateAppointmentService = async (id,date,start_time,end_time)=>{
     try{
         const result = await updateAppointment(id,date,start_time,end_time);
+        if (!result) {
+    throw new AppError("Appointment not found", 404);
+}
         return result;
     }catch (error) {
         throw error;
@@ -55,6 +71,10 @@ const updateAppointmentService = async (id,date,start_time,end_time)=>{
 const deleteAppointmentService = async (id)=>{
     try{
         const result = await deleteAppointment(id);
+        if (!result) {
+    throw new AppError("Appointment not found", 404);
+}
+
         return result;
     }catch (error) {
         throw error;
@@ -87,24 +107,24 @@ const cancelAppointmentService = async (appointmentId, userId) => {
         );
 
         if (!lockRow) {
-            throw new Error("Appointment not found");
+            throw new AppError("Appointment not found", 404);
         }
 
         // Find the doctor associated with the logged-in user
         const doctor = await getDoctorByUserIdService(userId);
 
         if (!doctor) {
-            throw new Error("Doctor not found");
+            throw new AppError("Doctor not found", 404);
         }
 
         // Check whether this appointment belongs to this doctor
         if (lockRow.doctor_id != doctor.id) {
-            throw new Error("Not Authorized");
+            throw new AppError("Not Authorized", 403);
         }
 
         // Appointment is already cancelled
         if (lockRow.status == "cancelled") {
-            throw new Error("Appointment cannot be cancelled");
+           throw new AppError("Appointment cannot be cancelled", 409);
         }
 
         // Find booking associated with this appointment
@@ -154,5 +174,6 @@ module.exports = {
     getAppointmentByIdService,
     updateAppointmentService,
     deleteAppointmentService,
-    getAppointmentsByDoctorIdService
+    getAppointmentsByDoctorIdService,
+    cancelAppointmentService
 };

@@ -2,12 +2,13 @@ const {createAppointmentService,
     getAllAppointmentsService,
     getAppointmentByIdService,
     updateAppointmentService,
-    deleteAppointmentService,
+    deleteAppointmentService,cancelAppointmentService,
 getAppointmentsByDoctorIdService}=require("../services/appointment.service");
+const AppError = require("../utils/errors");
 
 const {getDoctorByUserIdService}=require("../services/doctor.service");
 
-const createAppointmentController = async (req, res) => {
+const createAppointmentController = async (req, res,next) => {
     try {
         // Logged in user's id
         const id = req.user.id;
@@ -18,12 +19,7 @@ const createAppointmentController = async (req, res) => {
         // Find doctor using user id
         const doctor = await getDoctorByUserIdService(id);
 
-        // Doctor not found
-        if (!doctor) {
-            return res.status(404).json({
-                message: "Doctor not found"
-            });
-        }
+        
 
         // Create appointment
         const appointment = await createAppointmentService(
@@ -40,11 +36,11 @@ const createAppointmentController = async (req, res) => {
         });
 
     } catch (error) {
-        throw error;
-    }
+    next(error);
+}
 };
 
-const getAllAppointmentsController = async (req, res) => {
+const getAllAppointmentsController = async (req, res,next) => {
     try {
         const allAppointments = await getAllAppointmentsService();
 
@@ -57,7 +53,7 @@ const getAllAppointmentsController = async (req, res) => {
     }
 };
 
-const getAppointmentByIdController = async (req,res)=>{
+const getAppointmentByIdController = async (req,res,next)=>{
     try{
         const id = req.params.id;
         const appointmentById = await getAppointmentByIdService(id);
@@ -66,12 +62,12 @@ const getAppointmentByIdController = async (req,res)=>{
             appointmentById
         });
 
-    } catch (error) {
-        throw error;
-    }
+    }catch (error) {
+    next(error);
+}
 }
 
-const updateAppointmentController = async(req,res)=>{
+const updateAppointmentController = async(req,res,next)=>{
     try{
         const userId=req.user.id;
         const {date,start_time,end_time}= req.body;
@@ -80,17 +76,10 @@ const updateAppointmentController = async(req,res)=>{
         const doctor = await getDoctorByUserIdService(userId);
         const appointment = await getAppointmentByIdService(appointmentId);
 
-        // Doctor not found
-        if (!doctor) {
-            return res.status(404).json({
-                message: "Doctor not found"
-            });
-        }
+        
 
          if (appointment.doctor_id !== doctor.id) {
-            return res.status(403).json({
-                message: "Unauthorized"
-            });
+            throw new AppError("Unauthorized", 403);
         }
         
         const updateDoctor = await updateAppointmentService(appointmentId,date,start_time,end_time);
@@ -100,11 +89,11 @@ const updateAppointmentController = async(req,res)=>{
         });
 
     }catch (error) {
-        throw error;
-    }
+    next(error);
+}
 }
 
-const deleteAppointmentController = async(req,res)=>{
+const deleteAppointmentController = async(req,res,next)=>{
     try{
         const userId=req.user.id;
         const appointmentId = req.params.id;
@@ -112,17 +101,10 @@ const deleteAppointmentController = async(req,res)=>{
          const doctor = await getDoctorByUserIdService(userId);
         const appointment = await getAppointmentByIdService(appointmentId);
 
-        // Doctor not found
-        if (!doctor) {
-            return res.status(404).json({
-                message: "Doctor not found"
-            });
-        }
+       
 
          if (appointment.doctor_id !== doctor.id) {
-            return res.status(403).json({
-                message: "Unauthorized"
-            });
+            throw new AppError("Unauthorized", 403);
         }
 
         const deleteAppointment = await deleteAppointmentService(appointmentId);
@@ -131,8 +113,8 @@ const deleteAppointmentController = async(req,res)=>{
             deleteAppointment
         });
     }catch (error) {
-        throw error;
-    }
+    next(error);
+}
 }
 
 const getAppointmentsByDoctorIdController = async (req, res,next) => {
